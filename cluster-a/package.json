@@ -1,0 +1,13 @@
+{
+  "name": "cluster-a-api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway externo — simula el Cluster A en GKE",
+  "main": "src/gateway.js",
+  "scripts": {
+    "start": "node src/gateway.js",
+    "start:dev": "node --watch src/gateway.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

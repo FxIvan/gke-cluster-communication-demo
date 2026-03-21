@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "Laptop Pro X1",
+    "price": 1299.99,
+    "stock": 42,
+    "category": "electronics",
+    "brand": "TechCorp",
+    "sku": "TC-LPX1-001"
+  },
+  {
+    "id": "2",
+    "name": "Wireless Mouse M200",
+    "price": 29.99,
+    "stock": 150,
+    "category": "peripherals",
+    "brand": "ClickMaster",
+    "sku": "CM-WM200-002"
+  },
+  {
+    "id": "3",
+    "name": "Mechanical Keyboard K80",
+    "price": 89.99,
+    "stock": 75,
+    "category": "peripherals",
+    "brand": "TypeFast",
+    "sku": "TF-MK80-003"
+  },
+  {
+    "id": "4",
+    "name": "4K Monitor UltraWide",
+    "price": 549.99,
+    "stock": 18,
+    "category": "electronics",
+    "brand": "ViewPro",
+    "sku": "VP-4KUW-004"
+  },
+  {
+    "id": "5",
+    "name": "USB-C Hub 7-in-1",
+    "price": 45.99,
+    "stock": 200,
+    "category": "accessories",
+    "brand": "ConnectAll",
+    "sku": "CA-HUB7-005"
+  }
+]
