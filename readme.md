@@ -375,3 +375,97 @@ gcloud container clusters delete cluster-b --zone=us-central1-c
 - **Service**: expone una aplicación dentro o fuera del cluster
 - **LoadBalancer**: asigna una IP pública externa al Service
 - **ConfigMap / env**: mecanismo para inyectar configuración en los Pods sin hardcodear valores en el código
+
+---
+
+## Actualizar el cluster después de cambios
+
+Guía de referencia rápida para aplicar cambios al deploy sin tener que recrear todo desde cero.
+
+---
+
+### Caso 1: Cambié código de la aplicación (Cluster B)
+
+Cuando modificás archivos `.ts`, `.js`, o cualquier lógica interna del servicio:
+
+```bash
+# 1. Pararse en la carpeta del cluster B
+cd cluster-b
+
+# 2. Rebuild y push de la nueva imagen
+gcloud builds submit --tag gcr.io/proyecto-laboratorio-467421/cluster-b-products:latest .
+
+# 3. Apuntar kubectl al Cluster B
+gcloud container clusters get-credentials cluster-b --zone=us-central1-c
+
+# 4. Forzar el restart para que tome la nueva imagen
+kubectl rollout restart deployment/products-service
+
+# 5. Verificar que el rollout fue exitoso
+kubectl rollout status deployment/products-service
+```
+
+---
+
+### Caso 2: Cambié código de la aplicación (Cluster A)
+
+```bash
+# 1. Pararse en la carpeta del cluster A
+cd cluster-a
+
+# 2. Rebuild y push de la nueva imagen
+gcloud builds submit --tag gcr.io/proyecto-laboratorio-467421/cluster-a-gateway:latest .
+
+# 3. Apuntar kubectl al Cluster A
+gcloud container clusters get-credentials cluster-a --zone=us-east1-b
+
+# 4. Forzar el restart para que tome la nueva imagen
+kubectl rollout restart deployment/api-gateway
+
+# 5. Verificar que el rollout fue exitoso
+kubectl rollout status deployment/api-gateway
+```
+
+---
+
+### Caso 3: Cambié una variable de entorno (ej: la IP del Cluster B)
+
+No necesitás rebuild de imagen, solo actualizar la variable en el Cluster A:
+
+```bash
+# 1. Apuntar kubectl al Cluster A
+gcloud container clusters get-credentials cluster-a --zone=us-east1-b
+
+# 2. Actualizar la variable de entorno
+kubectl set env deployment/api-gateway CLUSTER_B_URL=http://<nueva-ip>:3001
+
+# 3. Verificar
+kubectl rollout status deployment/api-gateway
+```
+
+> Kubernetes hace el restart automáticamente al cambiar una variable de entorno.
+
+---
+
+### Caso 4: Cambié un archivo YAML (Deployment, Service, etc.)
+
+```bash
+kubectl apply -f <nombre-del-archivo>.yaml
+```
+
+---
+
+### Verificar el contexto actual de kubectl
+
+Si algo no funciona, primero verificá a qué cluster está apuntando `kubectl`:
+
+```bash
+# Ver el contexto activo
+kubectl config current-context
+
+# Ver todos los deployments del cluster actual
+kubectl get deployments
+
+# Ver todos los services del cluster actual
+kubectl get services
+```
