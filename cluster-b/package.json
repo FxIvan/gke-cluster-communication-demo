@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Microservicio interno de productos — simula el Cluster B en GKE",
   "scripts": {
-    "start": "node dist/main.js",
     "start:dev": "npx ts-node src/main.ts",
     "build": "npx tsc"
   },

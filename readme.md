@@ -208,6 +208,20 @@ Todos los endpoints públicos pasan por el **Cluster A** (puerto 3000). Los del 
 
 ---
 
+## Permitir usar API de GCP
+
+```bash
+gcloud services enable container.googleapis.com
+gcloud services enable cloudbuild.googleapis.com
+gcloud services enable containerregistry.googleapis.com
+```
+### Instalar esto, porque osino nos aparece el error de la imagen:
+```bash
+gcloud components install gke-gcloud-auth-plugin
+```
+![Error si no instalo gke-gcloud-auth-plugin ](screenshots/image.png)
+---
+
 ### Paso 1: Configurar región y zona
 
 ```bash
@@ -246,14 +260,14 @@ gcloud container clusters create cluster-a \
 ```bash
 # Cluster B
 cd cluster-b
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/cluster-b-products:latest .
+gcloud builds submit --tag gcr.io/proyecto-laboratorio-467421/cluster-b-products:latest .
 
 # Cluster A
 cd ../cluster-a
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/cluster-a-gateway:latest .
+gcloud builds submit --tag gcr.io/proyecto-laboratorio-467421/cluster-a-gateway:latest .
 ```
 
-Reemplazá `YOUR_PROJECT_ID` con tu proyecto de GCP.
+Reemplazá `proyecto-laboratorio-467421` con tu proyecto de GCP.
 
 ---
 
@@ -269,7 +283,7 @@ Crear el Deployment y el Service:
 
 ```bash
 kubectl create deployment products-service \
-  --image=gcr.io/YOUR_PROJECT_ID/cluster-b-products:latest
+  --image=gcr.io/proyecto-laboratorio-467421/cluster-b-products:latest
 
 kubectl expose deployment products-service \
   --type=LoadBalancer \
@@ -278,6 +292,7 @@ kubectl expose deployment products-service \
 ```
 
 Obtener la External IP del Cluster B (esperá hasta que aparezca):
+![IP Externa del clusterB ](screenshots/external_ip_cluster_b.png)
 
 ```bash
 kubectl get service products-service
@@ -299,10 +314,10 @@ Crear el Deployment pasando la URL del Cluster B como variable de entorno:
 
 ```bash
 kubectl create deployment api-gateway \
-  --image=gcr.io/YOUR_PROJECT_ID/cluster-a-gateway:latest
+  --image=gcr.io/proyecto-laboratorio-467421/cluster-a-gateway:latest
 
 kubectl set env deployment/api-gateway \
-  CLUSTER_B_URL=http://CLUSTER_B_IP:3001
+  CLUSTER_B_URL=http://34.46.174.138:3001
 
 kubectl expose deployment api-gateway \
   --type=LoadBalancer \
@@ -315,6 +330,7 @@ Obtener la External IP del Cluster A:
 ```bash
 kubectl get service api-gateway
 ```
+![IP Externa del cluster A ](screenshots/external_ip_cluster_A.png)
 
 ---
 
@@ -327,6 +343,8 @@ curl http://CLUSTER_A_IP/api/products
 curl http://CLUSTER_A_IP/api/products/1
 curl http://CLUSTER_A_IP/health
 ```
+
+![alt text](screenshots/postman.png)
 
 ---
 

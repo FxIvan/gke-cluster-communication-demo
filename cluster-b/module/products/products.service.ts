@@ -18,7 +18,7 @@ export class ProductsService {
 
   constructor() {
     // Carga el JSON estático como si fuera la base de datos
-    const dbPath = path.join(__dirname, 'products.db.json');
+    const dbPath = path.resolve(__dirname, 'products.db.json');
     this.products = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
     console.log(`[Cluster B] Loaded ${this.products.length} products from static DB`);
   }
